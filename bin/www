@@ -97,50 +97,23 @@ function onListening() {
  * Socket ion
  */
 
-var line_history = [];
-var socketid = [];
 
 io.on('connection', function (socket) {
-  socketid.push(socket.id)
-  //console.log(socketid);
-
-  socket.on('chat message', function (msg) {
-    console.log(socket.client.conn.server.clientsCount + " users connected: " + socket.id)
+  console.log(socket.client.conn.server.clientsCount + " users connected: " + socket.id)
+ socket.on('sana', function (wrd) {
+  io.emit('sana', wrd);
+});
+  
+  socket.on('chat message', function(msg){
+    
     io.emit('chat message', msg);
-  });
-
-  socket.on('sana', function (wrd) {
-    io.to(`${vuorossaID}`).emit('sana', wrd);
-    console.log('Vuorossa on ' + vuorossaID + ' sanalla: ' + sana)
-  });
+  })
+ 
+  // socket.on('hiiri', hiiriMsg)
+  // function hiiriMsg (data) {
+  //   console.log(data);
+  //   socket.broadcast.emit('hiiri', data);
+  // }
+  
+  
 })
-
-/**
- * ARPOMISFUNKTIOT SANALLE JA VUOROSSA OLEVALLE
- */
-
-function resolveAfter4Seconds() {
-  return new Promise(resolve => {
-    setTimeout(() => {
-      resolve(socketid);
-    }, 4000);
-  });
-}
-
-async function arpoa() {
-  let soketit = await resolveAfter4Seconds();
-  const vuorossaID = soketit[Math.floor(Math.random() * soketit.length)];
-  console.log("Ensimmäisessä vuorossa on " + vuorossaID)
-}
-
-function intialTrigger() {
-  arpoa();
-}
-
-const laterTrigger = (callback) => {
-  const vuorossaID = soketit[Math.floor(Math.random() * soketit.length)];
-  console.log("Nyt vuorossa on " + vuorossaID)
-  callback(vuorossaID);
-}
-
-module.exports = {intialTrigger, laterTrigger}
